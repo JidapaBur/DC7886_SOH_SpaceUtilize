@@ -15,7 +15,7 @@ if soh_file:
     soh_df = pd.read_csv(soh_file, encoding='cp874') if soh_file.name.endswith(".csv") else pd.read_excel(soh_file)
 
     # Load master data from local file in repo
-    master_df = pd.read_excel("data/master.xlsx")
+    master_df = pd.read_excel("master_product.xlsx")
 
     df = pd.merge(soh_df, master_df, on="SKU", how="left")
     df["Pallets"] = df["SOH"] / df["Case per pallet"]
