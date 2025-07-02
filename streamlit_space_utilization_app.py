@@ -1,11 +1,14 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+#----------------------------------------------------------------------
+
 st.set_page_config(layout="wide")
 st.title("DC Space Utilization Dashboard")
+
+#----------------------------------------------------------------------
 
 # Upload only SOH file
 soh_file = st.file_uploader("Upload SOH File", type=["csv", "xlsx"])
@@ -17,10 +20,14 @@ if soh_file:
     # Load master data from local file in repo
     master_df = pd.read_excel("master_product.xlsx")
 
+#----------------------------------------------------------------------
+    
     df = pd.merge(soh_df, master_df, on="SKU", how="left")
     df["Pallets"] = df["SOH"] / df["Case per pallet"]
     df["Pallets"] = df["Pallets"].fillna(0).round(2)
 
+#----------------------------------------------------------------------
+    
     def get_stacking(row):
         if row["Zone"] == 2:
             return 1
@@ -30,10 +37,12 @@ if soh_file:
             return 3
         else:
             return 3
-
+            
     df["Stacking"] = df.apply(get_stacking, axis=1)
     df["Effective_Pallets"] = (df["Pallets"] / df["Stacking"]).round(2)
 
+#----------------------------------------------------------------------
+    
     # Zone & dept config
     zone_area = {1: 2520, 2: 1140, 3: 480}
     zone_stack_limit = {1: 3, 2: 1, 3: 1}
@@ -57,7 +66,9 @@ if soh_file:
         capacity = (usable_area / pallet_area) * stack
         zone_capacity[zone] = round(capacity)
     zone_capacity[1] = sum(dept_capacity.values())
-
+    
+#----------------------------------------------------------------------
+    
     # Summary per zone
     zone_summary = df.groupby("Zone")["Effective_Pallets"].sum().reset_index()
     zone_summary.columns = ["Zone", "Total_Pallets"]
@@ -77,6 +88,8 @@ if soh_file:
     st.subheader("Zone 1: Dept Breakdown")
     st.dataframe(dept_usage_zone1)
 
+#----------------------------------------------------------------------
+    
     # Bar Chart 100% Zones
     used = zone_summary["Total_Pallets"]
     unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
@@ -84,7 +97,20 @@ if soh_file:
     used_percent = (used / total) * 100
     unused_percent = (unused / total) * 100
 
-    labels = ["Zone 1: Floor", "Zone 2: Rack", "Zone 3: Receiving"]
+    # Generate labels dynamically from zone_summary
+    zone_labels = {
+        1: "Zone 1: Floor",
+        2: "Zone 2: Rack",
+        3: "Zone 3: Receiving"
+    }
+    
+    labels = zone_summary["Zone"].map(zone_labels).tolist()
+    used = zone_summary["Total_Pallets"]
+    unused = zone_summary["Capacity"] - used
+    total = used + unused
+    used_percent = (used / total) * 100
+    unused_percent = (unused / total) * 100
+    
     fig, ax = plt.subplots()
     ax.bar(labels, used_percent, label="Used", color="steelblue")
     ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
