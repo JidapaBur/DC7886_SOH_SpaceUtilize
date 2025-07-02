@@ -90,36 +90,34 @@ if soh_file:
 
 #----------------------------------------------------------------------
     
-    # Bar Chart 100% Zones
+    # สร้างคอลัมน์แนวนอนสำหรับกราฟ
+    col1, col2 = st.columns(2)
+
+    # เตรียมข้อมูลกราฟ zone
     used = zone_summary["Total_Pallets"]
     unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
     total = used + unused
     used_percent = (used / total) * 100
     unused_percent = (unused / total) * 100
 
-    # Generate labels dynamically from zone_summary
     zone_labels = {
         1: "Zone 1: Floor",
         2: "Zone 2: Rack",
         3: "Zone 3: Receiving"
     }
-    
     labels = zone_summary["Zone"].map(zone_labels).tolist()
-    used = zone_summary["Total_Pallets"]
-    unused = zone_summary["Capacity"] - used
-    total = used + unused
-    used_percent = (used / total) * 100
-    unused_percent = (unused / total) * 100
-    
-    fig, ax = plt.subplots()
-    ax.bar(labels, used_percent, label="Used", color="steelblue")
-    ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
-    ax.set_ylabel("Utilization (%)")
-    ax.set_title("Zone Space Utilization (Stacked 100%)")
-    ax.legend()
-    st.pyplot(fig)
 
-    # Bar Chart 100% Dept in Zone 1
+    # กราฟซ้าย: Zone Utilization
+    with col1:
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.bar(labels, used_percent, label="Used", color="steelblue")
+        ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
+        ax.set_ylabel("Utilization (%)")
+        ax.set_title("Zone Utilization (100%)")
+        ax.legend()
+        st.pyplot(fig)
+
+    # เตรียมข้อมูลกราฟ dept
     name_map = {"TV": "T.V.", "WASHING": "WASHING MACHINE"}
     dept_used = df[df["Zone"] == 1].groupby("DEPT_NAME")["Effective_Pallets"].sum()
     dept_used_renamed = dept_used.rename(index=name_map)
@@ -131,10 +129,13 @@ if soh_file:
     used_percent = (dept_used_renamed / total) * 100
     unused_percent = (unused / total) * 100
 
-    fig2, ax2 = plt.subplots()
-    ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
-    ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
-    ax2.set_ylabel("Utilization (%)")
-    ax2.set_title("Dept Utilization in Zone 1 (Stacked 100%)")
-    ax2.legend()
-    st.pyplot(fig2)
+    # กราฟขวา: Dept Utilization
+    with col2:
+        fig2, ax2 = plt.subplots(figsize=(6, 4))
+        ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
+        ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
+        ax2.set_ylabel("Utilization (%)")
+        ax2.set_title("Dept Utilization in Zone 1 (100%)")
+        ax2.legend()
+        st.pyplot(fig2)
+
