@@ -7,3 +7,5 @@ geopy
 geopandas
 shapely
 plotly
+matplotlib
+openpyxl
