@@ -25,6 +25,7 @@ if soh_file:
     df = pd.merge(soh_df, master_df, on="SKU", how="left")
     df["Pallets"] = df["SOH"] / df["Case per pallet"]
     df["Pallets"] = df["Pallets"].fillna(0).round(2)
+    df["Total Cost"] = df["SOH"] * df["Cost"]
 
 #----------------------------------------------------------------------
     
@@ -66,6 +67,38 @@ if soh_file:
         capacity = (usable_area / pallet_area) * stack
         zone_capacity[zone] = round(capacity)
     zone_capacity[1] = sum(dept_capacity.values())
+    
+#----------------------------------------------------------------------
+
+    st.subheader("Summary by Dept")
+
+    # สร้างตารางรวมตามแผนก
+    dept_summary = df.groupby("DEPT_NAME").agg({
+        "SOH": "sum",
+        "Pallets": "sum",
+        "Total Cost": "sum"  # ต้องแน่ใจว่ามี column นี้ใน master
+    }).reset_index()
+
+    dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
+    dept_summary = dept_summary.sort_values(by="Dept.")
+
+    # เพิ่มแถว Grand Total
+    grand_total = pd.DataFrame({
+        "Dept.": ["Grand Total"],
+        "Sum of SOH": [dept_summary["Sum of SOH"].sum()],
+        "Sum of Pallet": [dept_summary["Sum of Pallet"].sum()],
+        "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
+    })
+    dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
+
+    # จัดรูปแบบแสดงผล
+    def format_table(df):
+        df["Sum of SOH"] = df["Sum of SOH"].apply(lambda x: f"{int(x):,}")
+        df["Sum of Pallet"] = df["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
+        df["Sum of Total Cost"] = df["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
+        return df
+
+    st.dataframe(format_table(dept_summary), use_container_width=True)
     
 #----------------------------------------------------------------------
     
