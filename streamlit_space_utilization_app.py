@@ -7,6 +7,7 @@ import matplotlib.patches as patches
 
 st.set_page_config(layout="wide")
 st.title("DC Space Utilization Dashboard")
+st.markdown("<div style='text-align:right; font-size:12px; color:gray;'>Master Update on May-25 Version 1.0.0 Developed by Jidapa Buranachan</div>", unsafe_allow_html=True)
 
 #----------------------------------------------------------------------
 
@@ -70,13 +71,13 @@ if soh_file:
     
 #----------------------------------------------------------------------
 
-    st.subheader("Summary by Dept")
+    st.subheader("Space Utilization 7886")
 
     # สร้างตารางรวมตามแผนก
     dept_summary = df.groupby("DEPT_NAME").agg({
         "SOH": "sum",
         "Pallets": "sum",
-        "Total Cost": "sum"  # ต้องแน่ใจว่ามี column นี้ใน master
+        "Total Cost": "sum"  
     }).reset_index()
 
     dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
