@@ -7,7 +7,7 @@ import matplotlib.patches as patches
 
 st.set_page_config(layout="wide")
 st.title("DC Space Utilization Dashboard")
-st.markdown("<div style='text-align:right; font-size:12px; color:gray;'>Master Update on May-25 Version 1.0.0 Developed by Jidapa Buranachan</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:right; font-size:12px; color:gray;'>Master Product Update on May-25 Version 1.0.0 Developed by Jidapa Buranachan</div>", unsafe_allow_html=True)
 
 #----------------------------------------------------------------------
 
