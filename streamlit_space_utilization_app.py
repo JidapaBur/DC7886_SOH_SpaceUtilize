@@ -134,7 +134,6 @@ if soh_file:
 
     # ใช้ตัวเลขคำนวณต่อได้ เช่น
     unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
-    zone_summary["Unused"] = unused
 
     # จากนั้น ถ้าจะโชว์ใน dataframe ให้ format เป็น string แยกออกมา
     zone_summary_display = zone_summary.copy()
