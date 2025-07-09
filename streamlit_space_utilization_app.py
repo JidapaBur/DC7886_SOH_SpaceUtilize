@@ -72,34 +72,6 @@ if soh_file:
 #----------------------------------------------------------------------
 
     st.subheader("Space Utilization 7886")
-
-    # สร้างตารางรวมตามแผนก
-    dept_summary = df.groupby("DEPT_NAME").agg({
-        "SOH": "sum",
-        "Pallets": "sum",
-        "Total Cost": "sum"  
-    }).reset_index()
-
-    dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
-    dept_summary = dept_summary.sort_values(by="Dept.")
-
-    # เพิ่มแถว Grand Total
-    grand_total = pd.DataFrame({
-        "Dept.": ["Grand Total"],
-        "Sum of SOH": [dept_summary["Sum of SOH"].sum()],
-        "Sum of Pallet": [dept_summary["Sum of Pallet"].sum()],
-        "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
-    })
-    dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
-
-    # จัดรูปแบบแสดงผล
-    def format_table(df):
-        df["Sum of SOH"] = df["Sum of SOH"].apply(lambda x: f"{int(x):,}")
-        df["Sum of Pallet"] = df["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
-        df["Sum of Total Cost"] = df["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
-        return df
-
-    st.dataframe(format_table(dept_summary), use_container_width=True)
     
 #----------------------------------------------------------------------
     
@@ -110,17 +82,26 @@ if soh_file:
     zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
     zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
 
-    # Dept breakdown in zone 1
-    dept_usage_zone1 = df[df["Zone"] == 1].groupby("DEPT_NAME")["Effective_Pallets"].sum().reset_index()
-    dept_usage_zone1["Capacity"] = dept_usage_zone1["DEPT_NAME"].map(dept_capacity)
-    dept_usage_zone1["Utilization_%"] = (dept_usage_zone1["Effective_Pallets"] / dept_usage_zone1["Capacity"]) * 100
-    dept_usage_zone1["Utilization_%"] = dept_usage_zone1["Utilization_%"].round(2)
+    # สร้าง dept_summary ใหม่
+    dept_summary = df.groupby("DEPT_NAME")["Pallets"].sum().reset_index()
+    dept_summary.columns = ["Dept.", "Total_Pallets"]
+    
+    # ใส่ capacity
+    dept_summary["Capacity"] = dept_summary["Dept."].map(dept_capacity)
+    
+    # คำนวณ % utilization
+    dept_summary["%Utilization"] = (dept_summary["Total_Pallets"] / dept_summary["Capacity"]) * 100
+    dept_summary["%Utilization"] = dept_summary["%Utilization"].round(2)
+    
+    # เตรียม dataframe สำหรับแสดงผล
+    dept_summary_display = dept_summary.copy()
+    dept_summary_display["Total_Pallets"] = dept_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["Capacity"] = dept_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["%Utilization"] = dept_summary_display["%Utilization"].apply(lambda x: f"{x:.2f}%")
+    
+    st.subheader("Dept Summary (Capacity & Utilization)")
+    st.dataframe(dept_summary_display, use_container_width=True)
 
-    #st.subheader("Zone Summary")
-    #st.dataframe(zone_summary)
-
-    #st.subheader("Zone 1: Dept Breakdown")
-    #st.dataframe(dept_usage_zone1)
 
 #----------------------------------------------------------------------
     
@@ -158,8 +139,8 @@ if soh_file:
     # เพิ่มแถว Grand Total
     grand_total = pd.DataFrame({
         "Dept.": ["Grand Total"],
-        "Sum of SOH": [dept_summary["Sum of SOH"].sum()],
-        "Sum of Pallet": [dept_summary["Sum of Pallet"].sum()],
+        "Total Pallets": [dept_summary["Sum of Pallet"].sum()],
+        "Capacity": [dept_summary["Sum of Pallet"].sum()],
         "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
     })
     dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
