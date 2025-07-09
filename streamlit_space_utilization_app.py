@@ -75,6 +75,33 @@ if soh_file:
     
 #----------------------------------------------------------------------
     
+
+
+
+#----------------------------------------------------------------------
+    
+    # เตรียมข้อมูลกราฟ zone
+    used = zone_summary["Total_Pallets"]
+    unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
+    total = used + unused
+    used_percent = (used / total) * 100
+    unused_percent = (unused / total) * 100
+
+
+    # ใช้ตัวเลขคำนวณต่อได้ เช่น
+    unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
+
+    # จากนั้น ถ้าจะโชว์ใน dataframe ให้ format เป็น string แยกออกมา
+    zone_summary_display = zone_summary.copy()
+    zone_summary_display["Total_Pallets"] = zone_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
+    zone_summary_display["Capacity"] = zone_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
+    zone_summary_display["Utilization_%"] = zone_summary_display["Utilization_%"].apply(lambda x: f"{x:.2f}%")
+    
+    st.subheader("Zone Summary")
+    st.dataframe(zone_summary_display, use_container_width=True)
+
+# ------------------ Dept Summary -------------------
+
     # Summary per zone
     zone_summary = df.groupby("Zone")["Effective_Pallets"].sum().reset_index()
     zone_summary.columns = ["Zone", "Total_Pallets"]
@@ -107,59 +134,6 @@ if soh_file:
     
     st.subheader("Dept Summary (Capacity & Utilization)")
     st.dataframe(dept_summary_display, use_container_width=True)
-
-
-#----------------------------------------------------------------------
-    
-    # เตรียมข้อมูลกราฟ zone
-    used = zone_summary["Total_Pallets"]
-    unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
-    total = used + unused
-    used_percent = (used / total) * 100
-    unused_percent = (unused / total) * 100
-
-
-    # ใช้ตัวเลขคำนวณต่อได้ เช่น
-    unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
-
-    # จากนั้น ถ้าจะโชว์ใน dataframe ให้ format เป็น string แยกออกมา
-    zone_summary_display = zone_summary.copy()
-    zone_summary_display["Total_Pallets"] = zone_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Capacity"] = zone_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Utilization_%"] = zone_summary_display["Utilization_%"].apply(lambda x: f"{x:.2f}%")
-    
-    st.subheader("Zone Summary")
-    st.dataframe(zone_summary_display, use_container_width=True)
-
-# ------------------ Dept Summary -------------------
-    # สร้างตารางรวมตามแผนก
-    dept_summary = df.groupby("DEPT_NAME").agg({
-        "SOH": "sum",
-        "Pallets": "sum",
-        "Total Cost": "sum"  
-    }).reset_index()
-    
-    dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
-    dept_summary = dept_summary.sort_values(by="Dept.")
-    
-    # เพิ่มแถว Grand Total
-    grand_total = pd.DataFrame({
-        "Dept.": ["Grand Total"],
-        "Total Pallets": [dept_summary["Sum of Pallet"].sum()],
-        "Capacity": [dept_summary["Sum of Pallet"].sum()],
-        "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
-    })
-    dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
-    
-    # เตรียม DataFrame สำหรับแสดงผล
-    dept_summary_display = dept_summary.copy()
-    dept_summary_display["Sum of SOH"] = dept_summary_display["Sum of SOH"].apply(lambda x: f"{int(x):,}")
-    dept_summary_display["Sum of Pallet"] = dept_summary_display["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
-    dept_summary_display["Sum of Total Cost"] = dept_summary_display["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
-
-    st.subheader("Dept Summary")
-    st.dataframe(dept_summary_display, use_container_width=True)
-
 #----------------------------------------------------------------------
     
     # สร้างคอลัมน์แนวนอนสำหรับกราฟ
