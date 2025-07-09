@@ -138,7 +138,7 @@ if soh_file:
     zone_summary_display = zone_summary.copy()
     zone_summary_display["Total_Pallets"] = zone_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
     zone_summary_display["Capacity"] = zone_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Unused"] = zone_summary_display["Unused"].apply(lambda x: f"{int(x):,}")
+    zone_summary_display["Unused"] = zone_summary_display["unused"].apply(lambda x: f"{int(x):,}")
 
     st.subheader("Zone Summary")
     st.dataframe(zone_summary_display, use_container_width=True)
