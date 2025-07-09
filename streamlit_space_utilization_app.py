@@ -72,6 +72,24 @@ if soh_file:
 #----------------------------------------------------------------------
 
     st.subheader("Space Utilization 7886")
+        # สร้างตารางรวมตามแผนก
+    dept_summary = df.groupby("DEPT_NAME").agg({
+        "SOH": "sum",
+        "Pallets": "sum",
+        "Total Cost": "sum"  
+    }).reset_index()
+
+    dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
+    dept_summary = dept_summary.sort_values(by="Dept.")
+
+    # เพิ่มแถว Grand Total
+    grand_total = pd.DataFrame({
+        "Dept.": ["Grand Total"],
+        "Sum of SOH": [dept_summary["Sum of SOH"].sum()],
+        "Sum of Pallet": [dept_summary["Sum of Pallet"].sum()],
+        "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
+    })
+    dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
     
 #----------------------------------------------------------------------
     
