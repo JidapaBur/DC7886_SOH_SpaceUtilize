@@ -116,17 +116,14 @@ if soh_file:
     dept_usage_zone1["Utilization_%"] = (dept_usage_zone1["Effective_Pallets"] / dept_usage_zone1["Capacity"]) * 100
     dept_usage_zone1["Utilization_%"] = dept_usage_zone1["Utilization_%"].round(2)
 
-    st.subheader("Zone Summary")
-    st.dataframe(zone_summary)
+    #st.subheader("Zone Summary")
+    #st.dataframe(zone_summary)
 
-    st.subheader("Zone 1: Dept Breakdown")
-    st.dataframe(dept_usage_zone1)
+    #st.subheader("Zone 1: Dept Breakdown")
+    #st.dataframe(dept_usage_zone1)
 
 #----------------------------------------------------------------------
     
-    # สร้างคอลัมน์แนวนอนสำหรับกราฟ
-    col1, col2 = st.columns(2)
-
     # เตรียมข้อมูลกราฟ zone
     used = zone_summary["Total_Pallets"]
     unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
@@ -147,7 +144,40 @@ if soh_file:
 
     st.subheader("Zone Summary")
     st.dataframe(zone_summary_display, use_container_width=True)
+
+# ------------------ Dept Summary -------------------
+    # สร้างตารางรวมตามแผนก
+    dept_summary = df.groupby("DEPT_NAME").agg({
+        "SOH": "sum",
+        "Pallets": "sum",
+        "Total Cost": "sum"  
+    }).reset_index()
     
+    dept_summary.columns = ["Dept.", "Sum of SOH", "Sum of Pallet", "Sum of Total Cost"]
+    dept_summary = dept_summary.sort_values(by="Dept.")
+    
+    # เพิ่มแถว Grand Total
+    grand_total = pd.DataFrame({
+        "Dept.": ["Grand Total"],
+        "Sum of SOH": [dept_summary["Sum of SOH"].sum()],
+        "Sum of Pallet": [dept_summary["Sum of Pallet"].sum()],
+        "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
+    })
+    dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
+    
+    # เตรียม DataFrame สำหรับแสดงผล
+    dept_summary_display = dept_summary.copy()
+    dept_summary_display["Sum of SOH"] = dept_summary_display["Sum of SOH"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["Sum of Pallet"] = dept_summary_display["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["Sum of Total Cost"] = dept_summary_display["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
+    
+    st.dataframe(dept_summary_display, use_container_width=True)
+
+#----------------------------------------------------------------------
+    
+    # สร้างคอลัมน์แนวนอนสำหรับกราฟ
+    col1, col2 = st.columns(2)
+
     zone_labels = {
         1: "Zone 1: Floor",
         2: "Zone 2: Rack",
