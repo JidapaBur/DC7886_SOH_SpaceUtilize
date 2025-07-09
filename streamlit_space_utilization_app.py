@@ -109,6 +109,9 @@ if soh_file:
     zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
     zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
 
+    # เปลี่ยนชื่อ zone
+    zone_summary["Zone"] = zone_summary["Zone"].replace({1: "Floor", 2: "Rack", 3: "Recieve"})
+
 #----------------------------------------------------------------------
     
     # เตรียมข้อมูลกราฟ zone
