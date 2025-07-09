@@ -73,15 +73,6 @@ if soh_file:
     
     st.subheader("Space Utilization 7886")
     
-    st.markdown(
-        """
-        <div style='text-align: center;'>
-            <img src='7886Layout.png' width='300' alt='My Logo'/>
-            <div>My Logo</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
     
     # สร้างตารางรวมตามแผนก
     dept_summary = df.groupby("DEPT_NAME").agg({
@@ -232,4 +223,5 @@ if soh_file:
     
         st.pyplot(fig2)
 
-
+    
+    st.image("7886Layout.png", caption="My Logo", use_column_width=True)
