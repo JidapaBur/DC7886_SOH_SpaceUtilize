@@ -95,9 +95,15 @@ if soh_file:
     
     # เตรียม dataframe สำหรับแสดงผล
     dept_summary_display = dept_summary.copy()
-    dept_summary_display["Total_Pallets"] = dept_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
-    dept_summary_display["Capacity"] = dept_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
-    dept_summary_display["%Utilization"] = dept_summary_display["%Utilization"].apply(lambda x: f"{x:.2f}%")
+    dept_summary_display["Total_Pallets"] = dept_summary_display["Total_Pallets"].apply(
+        lambda x: f"{int(x):,}" if pd.notna(x) else "-"
+    )
+    dept_summary_display["Capacity"] = dept_summary_display["Capacity"].apply(
+        lambda x: f"{int(x):,}" if pd.notna(x) else "-"
+    )
+    dept_summary_display["%Utilization"] = dept_summary_display["%Utilization"].apply(
+        lambda x: f"{x:.2f}%" if pd.notna(x) else "-"
+    )
     
     st.subheader("Dept Summary (Capacity & Utilization)")
     st.dataframe(dept_summary_display, use_container_width=True)
