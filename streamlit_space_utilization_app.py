@@ -134,11 +134,16 @@ if soh_file:
     used_percent = (used / total) * 100
     unused_percent = (unused / total) * 100
 
+
+    # ใช้ตัวเลขคำนวณต่อได้ เช่น
+    unused = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
+    zone_summary["Unused"] = unused
+
     # จากนั้น ถ้าจะโชว์ใน dataframe ให้ format เป็น string แยกออกมา
     zone_summary_display = zone_summary.copy()
     zone_summary_display["Total_Pallets"] = zone_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
     zone_summary_display["Capacity"] = zone_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Unused"] = zone_summary_display["unused"].apply(lambda x: f"{int(x):,}")
+    zone_summary_display["Unused"] = zone_summary_display["Unused"].apply(lambda x: f"{int(x):,}")
 
     st.subheader("Zone Summary")
     st.dataframe(zone_summary_display, use_container_width=True)
