@@ -224,4 +224,5 @@ if soh_file:
         st.pyplot(fig2)
 
     
-    st.image("7886Layout.png", caption="My Logo", use_column_width=True)
+    st.image("7886Layout.png", caption="My Logo", use_container_width=True)
+
