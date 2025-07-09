@@ -70,8 +70,10 @@ if soh_file:
     zone_capacity[1] = sum(dept_capacity.values())
     
 #----------------------------------------------------------------------
-
+    
     st.subheader("Space Utilization 7886")
+    
+    st.image("7886Layout.png", caption="My Logo", use_column_width=True)
     
     # สร้างตารางรวมตามแผนก
     dept_summary = df.groupby("DEPT_NAME").agg({
