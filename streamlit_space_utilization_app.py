@@ -110,11 +110,19 @@ if soh_file:
     zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
     zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
 
+    # แปลง Total_Pallets และ Capacity เป็นจำนวนเต็มไม่มีทศนิยม
+    zone_summary["Total_Pallets"] = zone_summary["Total_Pallets"].apply(lambda x: f"{int(x):,}")
+    zone_summary["Capacity"] = zone_summary["Capacity"].apply(lambda x: f"{int(x):,}")
+
     # Dept breakdown in zone 1
     dept_usage_zone1 = df[df["Zone"] == 1].groupby("DEPT_NAME")["Effective_Pallets"].sum().reset_index()
     dept_usage_zone1["Capacity"] = dept_usage_zone1["DEPT_NAME"].map(dept_capacity)
     dept_usage_zone1["Utilization_%"] = (dept_usage_zone1["Effective_Pallets"] / dept_usage_zone1["Capacity"]) * 100
     dept_usage_zone1["Utilization_%"] = dept_usage_zone1["Utilization_%"].round(2)
+
+    # แปลง Total_Pallets และ Capacity เป็นจำนวนเต็มไม่มีทศนิยม
+    dept_usage_zone1["Effective_Pallets"] = dept_usage_zone1["Effective_Pallets"].apply(lambda x: f"{int(x):,}")
+    dept_usage_zone1["Capacity"] = dept_usage_zone1["Capacity"].apply(lambda x: f"{int(x):,}")
 
     st.subheader("Zone Summary")
     st.dataframe(zone_summary)
