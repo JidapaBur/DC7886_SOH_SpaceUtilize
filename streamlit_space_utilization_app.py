@@ -81,7 +81,7 @@ if soh_file:
         </div>
         """,
         unsafe_allow_html=True
-    ))
+    )
     
     # สร้างตารางรวมตามแผนก
     dept_summary = df.groupby("DEPT_NAME").agg({
