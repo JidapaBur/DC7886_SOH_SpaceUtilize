@@ -170,7 +170,8 @@ if soh_file:
     dept_summary_display["Sum of SOH"] = dept_summary_display["Sum of SOH"].apply(lambda x: f"{int(x):,}")
     dept_summary_display["Sum of Pallet"] = dept_summary_display["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
     dept_summary_display["Sum of Total Cost"] = dept_summary_display["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
-    
+
+    st.subheader("Dept Summary")
     st.dataframe(dept_summary_display, use_container_width=True)
 
 #----------------------------------------------------------------------
