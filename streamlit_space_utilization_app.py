@@ -80,9 +80,6 @@ if soh_file:
     zone_summary["Capacity"] = zone_summary["Zone"].map(zone_capacity)
     zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
     zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
-    zone_summary["Unused"] = zone_summary["Capacity"] - zone_summary["Total_Pallets"]
-
-
 
 #----------------------------------------------------------------------
     
