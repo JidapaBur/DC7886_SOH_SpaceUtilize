@@ -183,11 +183,16 @@ if soh_file:
     # กราฟซ้าย: Zone Utilization
     with col1:
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.bar(labels, used_percent, label="Used", color="steelblue")
-        ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
+        bars1 = ax.bar(labels, used_percent, label="Used", color="steelblue")
+        bars2 = ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
         ax.set_ylabel("Utilization (%)")
         ax.set_title("Zone Utilization (100%)")
         ax.legend()
+    
+        # เพิ่ม label บนแต่ละแท่ง
+        ax.bar_label(bars1, labels=[f"{v:.1f}%" for v in used_percent], label_type='center', fontsize=9, color='white')
+        ax.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
+    
         st.pyplot(fig)
 
     # เตรียมข้อมูลกราฟ dept
@@ -205,10 +210,16 @@ if soh_file:
     # กราฟขวา: Dept Utilization
     with col2:
         fig2, ax2 = plt.subplots(figsize=(6, 4))
-        ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
-        ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
+        bars1 = ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
+        bars2 = ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
         ax2.set_ylabel("Utilization (%)")
         ax2.set_title("Dept Utilization in Zone 1 (100%)")
         ax2.legend()
+    
+        # เพิ่ม label
+        ax2.bar_label(bars1, labels=[f"{v:.1f}%" for v in used_percent], label_type='center', fontsize=9, color='white')
+        ax2.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
+    
         st.pyplot(fig2)
+
 
