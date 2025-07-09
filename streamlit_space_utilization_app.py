@@ -186,7 +186,7 @@ if soh_file:
         bars1 = ax.bar(labels, used_percent, label="Used", color="steelblue")
         bars2 = ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
         ax.set_ylabel("Utilization (%)")
-        ax.set_title("Zone Utilization (100%)")
+        ax.set_title("7886 Utilization (100%)")
         ax.legend()
     
         # เพิ่ม label บนแต่ละแท่ง
@@ -213,7 +213,7 @@ if soh_file:
         bars1 = ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
         bars2 = ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
         ax2.set_ylabel("Utilization (%)")
-        ax2.set_title("Dept Utilization in Zone 1 (100%)")
+        ax2.set_title("On Floor Utilization by Dept.(100%)")
         ax2.legend()
     
         # เพิ่ม label
