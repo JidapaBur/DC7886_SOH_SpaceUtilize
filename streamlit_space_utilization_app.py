@@ -72,7 +72,8 @@ if soh_file:
 #----------------------------------------------------------------------
 
     st.subheader("Space Utilization 7886")
-        # สร้างตารางรวมตามแผนก
+    
+    # สร้างตารางรวมตามแผนก
     dept_summary = df.groupby("DEPT_NAME").agg({
         "SOH": "sum",
         "Pallets": "sum",
@@ -90,6 +91,15 @@ if soh_file:
         "Sum of Total Cost": [dept_summary["Sum of Total Cost"].sum()]
     })
     dept_summary = pd.concat([dept_summary, grand_total], ignore_index=True)
+    
+    # จัดรูปแบบแสดงผล
+    def format_table(df):
+        df["Sum of SOH"] = df["Sum of SOH"].apply(lambda x: f"{int(x):,}")
+        df["Sum of Pallet"] = df["Sum of Pallet"].apply(lambda x: f"{int(x):,}")
+        df["Sum of Total Cost"] = df["Sum of Total Cost"].apply(lambda x: f"{int(x):,}")
+        return df
+
+    st.dataframe(format_table(dept_summary), use_container_width=True)
     
 #----------------------------------------------------------------------
     
