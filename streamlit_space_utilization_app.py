@@ -112,7 +112,8 @@ if soh_file:
 
     
     # เปลี่ยนชื่อ zone
-    zone_summary["Zone"] = zone_summary["Zone"].replace({1: "Floor", 2: "Rack", 3: "Recieve"})
+    zone_summary["Zone_Name"] = zone_summary["Zone"].replace({1: "Floor", 2: "Rack", 3: "Recieve"})
+
 
 #----------------------------------------------------------------------
     
@@ -129,9 +130,9 @@ if soh_file:
 
     # จากนั้น ถ้าจะโชว์ใน dataframe ให้ format เป็น string แยกออกมา
     zone_summary_display = zone_summary.copy()
-    zone_summary_display["Total_Pallets"] = zone_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Capacity"] = zone_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
-    zone_summary_display["Utilization_%"] = zone_summary_display["Utilization_%"].apply(lambda x: f"{x:.2f}%")
+    zone_summary_display["Zone"] = zone_summary_display["Zone_Name"]  # ✅ ใช้ชื่อที่เปลี่ยน
+    zone_summary_display = zone_summary_display[["Zone", "Total_Pallets", "Capacity", "Utilization_%"]]
+
     
     st.subheader("Zone Summary")
     st.dataframe(zone_summary_display, use_container_width=True)
