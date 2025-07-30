@@ -186,7 +186,7 @@ if soh_file:
     zone_labels_map = {1: "Zone 1: Floor", 2: "Zone 2: Rack"}
     colors = ['steelblue', 'lightgray']
     
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(8, 3.5))
     
     for i, zone_id in enumerate([1, 2]):
         zone_name = zone_labels_map[zone_id]
