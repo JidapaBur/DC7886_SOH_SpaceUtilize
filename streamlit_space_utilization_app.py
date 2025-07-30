@@ -186,6 +186,26 @@ if soh_file:
     dept_summary_display = pd.concat([dept_summary_display, total_row], ignore_index=True)
 
     st.dataframe(dept_summary_display, use_container_width=True)
+
+
+    #----------------------------------------------------------------------
+    
+    # สร้างตารางแสดงรายการสินค้า พร้อมข้อมูล pallet และการใช้พื้นที่
+    detail_table = df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking", "Effective_Pallets"]].copy()
+    
+    # เปลี่ยนชื่อ column ให้อ่านง่าย
+    detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking", "Effective_Pallets"]
+    
+    # จัดรูปแบบตัวเลขให้ดูสวย
+    detail_table["Pallets"] = detail_table["Pallets"].round(2)
+    detail_table["Stacking"] = detail_table["Stacking"].round(2)
+    detail_table["Effective_Pallets"] = detail_table["Effective_Pallets"].round(2)
+    
+    # แสดงผลใน Streamlit
+    st.subheader("SKU-Level Pallet & Space Utilization")
+    st.dataframe(detail_table, use_container_width=True)
+
+    
 #----------------------------------------------------------------------
     # สร้างคอลัมน์แนวนอนสำหรับกราฟ
     col1, col2 = st.columns(2)
