@@ -207,7 +207,7 @@ if soh_file:
 
 #-------------------------------Missing Product---------------------------------------
     # ตรวจสอบว่าคีย์ master เป็นอะไร เช่น "SKU" หรือชื่ออื่น
-    master_skus = master_product["SKU"].unique()
+    master_skus = master_product["SKU"].astype(str).unique()
     
     # กรองแยกสินค้าที่ไม่มีใน master
     missing_sku_df = df[~df["SKU"].isin(master_skus)]
