@@ -197,7 +197,7 @@ if soh_file:
         st.pyplot(fig)
 
         # กราฟขวา: Zone1 Utilization
-        # 🔹 เตรียมข้อมูลก่อนวาดกราฟ (เหมือนเดิม)
+        # เตรียมข้อมูล
         zone1_df = df[df["Zone"] == 1]
         dept_used = zone1_df.groupby("DEPT_NAME")["Effective_Pallets"].sum()
         zone1_capacity = zone_capacity[1]
@@ -207,31 +207,30 @@ if soh_file:
         dept_percent = dept_percent.clip(upper=100)
         unused_percent = unused_percent.clip(lower=0)
         
-        # 🔹 จัดเรียงจากน้อยไปมาก (ให้ bar เรียงสวย)
         dept_percent = dept_percent.sort_values(ascending=True)
         unused_percent = unused_percent[dept_percent.index]
         
-        # 🔹 วาดกราฟแนวนอน เต็มจอ อยู่กึ่งกลาง
-        fig2, ax2 = plt.subplots(figsize=(12, max(5, 0.5 * len(dept_percent))))  # ปรับความสูงตามจำนวนแผนก
-        
+        # ---------- สร้างกราฟแนวนอนเต็มจอ ----------
+        fig2, ax2 = plt.subplots(figsize=(16, max(6, 0.6 * len(dept_percent))))  # กว้างขึ้น ชัดเจนขึ้น
         bars1 = ax2.barh(dept_percent.index, dept_percent, label="Used", color='steelblue')
         bars2 = ax2.barh(dept_percent.index, unused_percent, left=dept_percent, label="Unused", color='lightgray')
         
-        ax2.set_xlabel("Utilization (%)")
-        ax2.set_title("Dept-wise Utilization (vs Zone 1 Capacity)", fontsize=14, pad=15)
-        ax2.legend(loc="upper right")
+        ax2.set_xlabel("Utilization (%)", fontsize=12)
+        ax2.set_title("Dept-wise Utilization (vs Zone 1 Capacity)", fontsize=16, pad=15)
+        ax2.legend(loc="upper right", fontsize=10)
         
-        # 🔹 เพิ่ม label ชัดเจน
+        # Label บน bar
         for bar, percent in zip(bars1, dept_percent):
             ax2.text(bar.get_width() / 2, bar.get_y() + bar.get_height() / 2,
                      f"{percent:.1f}%", ha='center', va='center', color='white', fontsize=9)
-        
         for bar, percent in zip(bars2, unused_percent):
             ax2.text(bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() / 2,
                      f"{percent:.1f}%", ha='center', va='center', color='black', fontsize=9)
         
-        # 🔹 แสดงเต็มจอ ใช้ container width
+        # ---------- แสดงผลแบบอยู่กึ่งกลางและเต็มจอ ----------
+        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
         st.pyplot(fig2, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 
