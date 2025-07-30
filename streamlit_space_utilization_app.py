@@ -208,21 +208,24 @@ if soh_file:
     # ------------------------------- Missing Product ---------------------------------------
     
     # แปลง SKU เป็น string ทั้ง 2 ฝั่งเพื่อเทียบค่าถูกต้อง
-    df["SKU"] = df["SKU"].astype(str)
+    soh_df["SKU"] = soh_df["SKU"].astype(str)
     master_df["SKU"] = master_df["SKU"].astype(str)
     
     # ดึงรายการ SKU ที่มีใน master
     master_skus = master_df["SKU"].unique()
     
-    # กรองเฉพาะสินค้าที่ไม่มีใน master
-    missing_sku_df = df[~df["SKU"].isin(master_skus)]
+    # ✅ กรองเฉพาะสินค้าที่ไม่มีใน master จาก SOH โดยตรง
+    missing_sku_df = soh_df[~soh_df["SKU"].isin(master_skus)]
     
-    # สร้างตารางเฉพาะคอลัมน์ที่ต้องการแสดง พร้อมเปลี่ยนชื่อ header
-    missing_detail_table = missing_sku_df[["STORE_NO", "SKU", "Barcode", "Description", "SOH"]].copy()
-    missing_detail_table.columns = ["STORE_NO", "SKU", "Barcode", "Description", "SOH"]
+    # ✅ สร้างตารางเฉพาะคอลัมน์ที่ต้องการแสดง
+    # ตรวจสอบว่าคอลัมน์ชื่ออะไรบ้างในไฟล์ SOH (บางครั้งชื่ออาจไม่ตรง)
+    expected_cols = ["STORE_NO", "SKU", "Barcode", "Description", "SOH"]
+    available_cols = [col for col in expected_cols if col in missing_sku_df.columns]
     
-    # แสดงผลใน Streamlit
-    st.subheader("❌ SKUs Missing from Master Product")
+    missing_detail_table = missing_sku_df[available_cols].copy()
+    
+    # ✅ แสดงผล
+    st.subheader("❌ SKUs Missing from Master Product (From Uploaded SOH File)")
     st.dataframe(missing_detail_table.reset_index(drop=True), use_container_width=True)
 
 
