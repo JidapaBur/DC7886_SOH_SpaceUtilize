@@ -205,29 +205,26 @@ if soh_file:
     st.subheader("SKU-Level Pallet & Space Utilization")
     st.dataframe(detail_table, use_container_width=True)
 
-# ------------------------------- Missing Product ---------------------------------------
-
-    # แปลง SKU ทั้ง master และ df ให้เป็น string เพื่อให้ compare ได้แม่น
+    # ------------------------------- Missing Product ---------------------------------------
+    
+    # แปลง SKU เป็น string ทั้ง 2 ฝั่งเพื่อเทียบค่าถูกต้อง
     df["SKU"] = df["SKU"].astype(str)
     master_df["SKU"] = master_df["SKU"].astype(str)
     
-    # เอา SKU ที่อยู่ใน master
+    # ดึงรายการ SKU ที่มีใน master
     master_skus = master_df["SKU"].unique()
     
-    # กรองเฉพาะที่ไม่มีใน master
+    # กรองเฉพาะสินค้าที่ไม่มีใน master
     missing_sku_df = df[~df["SKU"].isin(master_skus)]
     
-    # สร้างตารางที่ต้องการแสดง
-    missing_detail_table = missing_sku_df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking", "Effective_Pallets"]].copy()
-    missing_detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking", "Effective_Pallets"]
-    
-    # ปัดทศนิยมให้ดูสวย
-    missing_detail_table[["Pallets", "Stacking", "Effective_Pallets"]] = \
-        missing_detail_table[["Pallets", "Stacking", "Effective_Pallets"]].round(2)
+    # สร้างตารางเฉพาะคอลัมน์ที่ต้องการแสดง พร้อมเปลี่ยนชื่อ header
+    missing_detail_table = missing_sku_df[["STORE_NO", "SKU", "Barcode", "Description", "SOH"]].copy()
+    missing_detail_table.columns = ["STORE_NO", "SKU", "Barcode", "Description", "SOH"]
     
     # แสดงผลใน Streamlit
     st.subheader("❌ SKUs Missing from Master Product")
     st.dataframe(missing_detail_table.reset_index(drop=True), use_container_width=True)
+
 
 
     
