@@ -21,8 +21,8 @@ if soh_file:
     # Load master data from local file in repo
     master_df = pd.read_excel("master_product.xlsx")
 
-# ตัดรายการที่ SOH <= 0 ทิ้ง
-soh_df = soh_df[soh_df["SOH"] > 0]
+    # ตัดรายการที่ SOH <= 0 ทิ้ง
+    soh_df = soh_df[soh_df["SOH"] > 0]
 
 #----------------------------------------------------------------------
     
