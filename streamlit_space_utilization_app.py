@@ -204,7 +204,7 @@ if soh_file:
                 autopct="%1.1f%%",
                 startangle=90,
                 colors=colors,
-                textprops={'fontsize': 10}
+                textprops={'fontsize': 5}
             )
             axes[i].axis('equal')
             axes[i].set_title(f"{zone_name} Utilization", fontsize=14)
