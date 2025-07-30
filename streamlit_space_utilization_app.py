@@ -197,36 +197,41 @@ if soh_file:
         st.pyplot(fig)
 
         # กราฟขวา: Zone1 Utilization
-        # เตรียมข้อมูลเฉพาะ Zone 1
+        # 🔹 เตรียมข้อมูลก่อนวาดกราฟ (เหมือนเดิม)
         zone1_df = df[df["Zone"] == 1]
-        
-        # รวม Effective Pallets ตามแผนก
         dept_used = zone1_df.groupby("DEPT_NAME")["Effective_Pallets"].sum()
-        
-        # ความจุรวมของ Zone 1
         zone1_capacity = zone_capacity[1]
         
-        # คำนวณ % การใช้พื้นที่ของแต่ละแผนก เทียบกับ zone 1
         dept_percent = (dept_used / zone1_capacity) * 100
         unused_percent = 100 - dept_percent
-        
-        # ห้ามให้เกิน 100% หรือค่าติดลบ
         dept_percent = dept_percent.clip(upper=100)
         unused_percent = unused_percent.clip(lower=0)
         
-        # วาดกราฟ
-        with col2:
-            fig2, ax2 = plt.subplots(figsize=(6, 4))
-            bars1 = ax2.bar(dept_percent.index, dept_percent, label="Used", color='steelblue')
-            bars2 = ax2.bar(dept_percent.index, unused_percent, bottom=dept_percent, label="Unused", color='lightgray')
-            ax2.set_ylabel("Utilization (%)")
-            ax2.set_title("Dept-wise Utilization (vs Zone 1 Capacity)")
-            ax2.legend()
+        # 🔹 จัดเรียงจากน้อยไปมาก (ให้ bar เรียงสวย)
+        dept_percent = dept_percent.sort_values(ascending=True)
+        unused_percent = unused_percent[dept_percent.index]
         
-            ax2.bar_label(bars1, labels=[f"{v:.1f}%" for v in dept_percent], label_type='center', fontsize=9, color='white')
-            ax2.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
+        # 🔹 วาดกราฟแนวนอน เต็มจอ อยู่กึ่งกลาง
+        fig2, ax2 = plt.subplots(figsize=(12, max(5, 0.5 * len(dept_percent))))  # ปรับความสูงตามจำนวนแผนก
         
-            st.pyplot(fig2)
+        bars1 = ax2.barh(dept_percent.index, dept_percent, label="Used", color='steelblue')
+        bars2 = ax2.barh(dept_percent.index, unused_percent, left=dept_percent, label="Unused", color='lightgray')
+        
+        ax2.set_xlabel("Utilization (%)")
+        ax2.set_title("Dept-wise Utilization (vs Zone 1 Capacity)", fontsize=14, pad=15)
+        ax2.legend(loc="upper right")
+        
+        # 🔹 เพิ่ม label ชัดเจน
+        for bar, percent in zip(bars1, dept_percent):
+            ax2.text(bar.get_width() / 2, bar.get_y() + bar.get_height() / 2,
+                     f"{percent:.1f}%", ha='center', va='center', color='white', fontsize=9)
+        
+        for bar, percent in zip(bars2, unused_percent):
+            ax2.text(bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() / 2,
+                     f"{percent:.1f}%", ha='center', va='center', color='black', fontsize=9)
+        
+        # 🔹 แสดงเต็มจอ ใช้ container width
+        st.pyplot(fig2, use_container_width=True)
 
 
 
