@@ -204,10 +204,10 @@ if soh_file:
                 autopct="%1.1f%%",
                 startangle=90,
                 colors=colors,
-                textprops={'fontsize': 5}
+                textprops={'fontsize': 8}
             )
             axes[i].axis('equal')
-            axes[i].set_title(f"{zone_name} Utilization", fontsize=14)
+            axes[i].set_title(f"{zone_name} Utilization", fontsize=10)
     
     # แสดงกราฟ
     st.pyplot(fig)
