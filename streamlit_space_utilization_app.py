@@ -197,32 +197,42 @@ if soh_file:
     
         st.pyplot(fig)
 
-    # เตรียมข้อมูลกราฟ dept
-    name_map = {"TV": "T.V.", "WASHING": "WASHING MACHINE"}
-    dept_used = df[df["Zone"] == 1].groupby("DEPT_NAME")["Effective_Pallets"].sum()
-    dept_used_renamed = dept_used.rename(index=name_map)
-    dept_used_renamed = dept_used_renamed[dept_used_renamed.index.isin(dept_capacity)]
-    cap = pd.Series(dept_capacity)[dept_used_renamed.index]
-    unused = cap - dept_used_renamed
-    unused[unused < 0] = 0
-    total = dept_used_renamed + unused
-    used_percent = (dept_used_renamed / total) * 100
-    unused_percent = (unused / total) * 100
+        # เตรียมข้อมูลกราฟ dept
+        name_map = {"TV": "T.V.", "WASHING": "WASHING MACHINE"}
+        dept_used = df[df["Zone"] == 1].groupby("DEPT_NAME")["Effective_Pallets"].sum()
+        dept_used_renamed = dept_used.rename(index=name_map)
+        
+        # ✅ ความจุรวมของ Zone 1 (ใช้ค่าเดียวสำหรับทุกแผนก)
+        zone1_capacity = zone_capacity[1]
+        
+        # คำนวณสัดส่วนแต่ละแผนก (ใช้เพื่อแบ่งสัดส่วนของ zone1 capacity)
+        used_total = dept_used_renamed.sum()
+        dept_capacity_shared = (dept_used_renamed / used_total) * zone1_capacity
+        
+        # หาพื้นที่เหลือ
+        unused = dept_capacity_shared - dept_used_renamed
+        unused[unused < 0] = 0
+        
+        # คำนวณ % สำหรับ stacked bar chart
+        total = dept_used_renamed + unused
+        used_percent = (dept_used_renamed / total) * 100
+        unused_percent = (unused / total) * 100
+        
+        # กราฟขวา: Dept Utilization (อิง zone1)
+        with col2:
+            fig2, ax2 = plt.subplots(figsize=(6, 4))
+            bars1 = ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
+            bars2 = ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
+            ax2.set_ylabel("Utilization (%)")
+            ax2.set_title("On Floor Utilization by Dept (Based on Zone 1 Capacity)")
+            ax2.legend()
+        
+            # เพิ่ม label
+            ax2.bar_label(bars1, labels=[f"{v:.1f}%" for v in used_percent], label_type='center', fontsize=9, color='white')
+            ax2.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
+        
+            st.pyplot(fig2)
 
-    # กราฟขวา: Dept Utilization
-    with col2:
-        fig2, ax2 = plt.subplots(figsize=(6, 4))
-        bars1 = ax2.bar(used_percent.index, used_percent, label="Used", color='steelblue')
-        bars2 = ax2.bar(used_percent.index, unused_percent, bottom=used_percent, label="Unused", color='lightgray')
-        ax2.set_ylabel("Utilization (%)")
-        ax2.set_title("On Floor Utilization by Dept.(100%)")
-        ax2.legend()
-    
-        # เพิ่ม label
-        ax2.bar_label(bars1, labels=[f"{v:.1f}%" for v in used_percent], label_type='center', fontsize=9, color='white')
-        ax2.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
-    
-        st.pyplot(fig2)
 
     
     st.image("7886Layout.png", use_container_width=True)
