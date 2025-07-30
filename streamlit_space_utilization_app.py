@@ -44,7 +44,7 @@ if soh_file:
             return 3
             
     df["Stacking"] = df.apply(get_stacking, axis=1)
-    df["Effective_Pallets"] = (df["Pallets"] / df["Stacking"]).round(2)
+    #df["Effective_Pallets"] = (df["Pallets"] / df["Stacking"]).round(2)
 
 #----------------------------------------------------------------------
     
@@ -107,7 +107,7 @@ if soh_file:
     
 #----------------------------------------------------------------------
 
-    zone_summary = df.groupby("Zone")["Effective_Pallets"].sum().reset_index()
+    zone_summary = df.groupby("Zone")["Pallets"].sum().reset_index()
     zone_summary.columns = ["Zone", "Total_Pallets"]
     zone_summary["Capacity"] = zone_summary["Zone"].map(zone_capacity)
     zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
@@ -144,7 +144,7 @@ if soh_file:
 
     # ✅ สร้าง Dept Summary ด้วย Effective Pallets จาก Zone 1
     zone1_df = df[df["Zone"] == 1]
-    dept_summary = zone1_df.groupby("DEPT_NAME")["Effective_Pallets"].sum().reset_index()
+    dept_summary = zone1_df.groupby("DEPT_NAME")["Pallets"].sum().reset_index()
     dept_summary.columns = ["Dept.", "Total_Pallets"]
     
     # ✅ ใช้ capacity เดียวกันทั้งตาราง (Zone 1)
@@ -182,10 +182,10 @@ if soh_file:
     #-----------------------------SKU Table-----------------------------------------
     
     # สร้างตารางแสดงรายการสินค้า พร้อมข้อมูล pallet และการใช้พื้นที่
-    detail_table = df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking", "Effective_Pallets"]].copy()
+    detail_table = df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking"]].copy()
     
     # เปลี่ยนชื่อ column ให้อ่านง่าย
-    detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking", "Effective_Pallets"]
+    detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking"]
     
     # จัดรูปแบบตัวเลขให้ดูสวย
     detail_table["Pallets"] = detail_table["Pallets"].round(2)
@@ -268,7 +268,7 @@ if soh_file:
     # ---------------------- กราฟขวา (Dept Summary) เต็มหน้า ---------------------
     # เตรียมข้อมูล
     zone1_df = df[df["Zone"] == 1]
-    dept_used = zone1_df.groupby("DEPT_NAME")["Effective_Pallets"].sum()
+    dept_used = zone1_df.groupby("DEPT_NAME")["Pallets"].sum()
     zone1_capacity = zone_capacity[1]
     
     dept_percent = (dept_used / zone1_capacity) * 100
