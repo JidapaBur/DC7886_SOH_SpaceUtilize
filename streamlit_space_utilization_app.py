@@ -182,10 +182,10 @@ if soh_file:
     #-----------------------------SKU Table-----------------------------------------
     
     # สร้างตารางแสดงรายการสินค้า พร้อมข้อมูล pallet และการใช้พื้นที่
-    detail_table = df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking"]].copy()
+    detail_table = df[["SKU", "Description", "DEPT_NAME", "Zone", "Pallets"]].copy()
     
     # เปลี่ยนชื่อ column ให้อ่านง่าย
-    detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking"]
+    detail_table.columns = ["SKU", "Description", "Dept", "Zone", "Pallets"]
     
     # จัดรูปแบบตัวเลขให้ดูสวย
     detail_table["Pallets"] = detail_table["Pallets"].round(2)
