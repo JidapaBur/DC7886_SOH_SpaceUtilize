@@ -67,7 +67,7 @@ if soh_file:
         stack = zone_stack_limit[zone]
         capacity = (usable_area / pallet_area) * stack
         zone_capacity[zone] = round(capacity)
-    zone_capacity[1] = sum(dept_capacity.values())
+    #zone_capacity[1] = sum(dept_capacity.values())
     
 #----------------------------------------------------------------------
     
@@ -149,7 +149,8 @@ if soh_file:
     dept_summary.columns = ["Dept.", "Total_Pallets"]
     
     # ใส่ capacity
-    dept_summary["Capacity"] = dept_summary["Dept."].map(dept_capacity)
+    #dept_summary["Capacity"] = dept_summary["Dept."].map(dept_capacity)
+    dept_summary["Capacity"] = zone_capacity[1]  # ใช้ cap ของ Zone 1 แทน
     
     # คำนวณ % utilization
     dept_summary["%Utilization"] = (dept_summary["Total_Pallets"] / dept_summary["Capacity"]) * 100
