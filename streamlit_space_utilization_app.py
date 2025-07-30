@@ -182,20 +182,36 @@ if soh_file:
     labels = zone_summary["Zone"].map(zone_labels).tolist()
 
     # ---------------------- กราฟซ้าย (Zone Summary) ---------------------
-    col1, _ = st.columns([1, 1])  # ใช้ col1 อย่างเดียว (อีกอันว่างไว้เฉย ๆ)
+    # เตรียมข้อมูล pie chart สำหรับแต่ละโซน
+    zone_labels_map = {1: "Zone 1: Floor", 2: "Zone 2: Rack"}
+    colors = ['steelblue', 'lightgray']
     
-    with col1:
-        fig, ax = plt.subplots(figsize=(6, 4))
-        bars1 = ax.bar(labels, used_percent, label="Used", color="steelblue")
-        bars2 = ax.bar(labels, unused_percent, bottom=used_percent, label="Unused", color="lightgray")
-        ax.set_ylabel("Utilization (%)")
-        ax.set_title("7886 Utilization (100%)")
-        ax.legend()
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     
-        ax.bar_label(bars1, labels=[f"{v:.1f}%" for v in used_percent], label_type='center', fontsize=9, color='white')
-        ax.bar_label(bars2, labels=[f"{v:.1f}%" for v in unused_percent], label_type='center', fontsize=9, color='black')
+    for i, zone_id in enumerate([1, 2]):
+        zone_name = zone_labels_map[zone_id]
+        
+        zone_row = zone_summary[zone_summary["Zone"] == zone_id]
+        if not zone_row.empty:
+            used = float(zone_row["Total_Pallets"])
+            unused = float(zone_row["Capacity"] - zone_row["Total_Pallets"])
+            used = max(used, 0)
+            unused = max(unused, 0)
+            
+            wedges, texts, autotexts = axes[i].pie(
+                [used, unused],
+                labels=["Used", "Unused"],
+                autopct="%1.1f%%",
+                startangle=90,
+                colors=colors,
+                textprops={'fontsize': 10}
+            )
+            axes[i].axis('equal')
+            axes[i].set_title(f"{zone_name} Utilization", fontsize=14)
     
-        st.pyplot(fig)
+    # แสดงกราฟ
+    st.pyplot(fig)
+    )
     
     # ---------------------- กราฟขวา (Dept Summary) เต็มหน้า ---------------------
     # เตรียมข้อมูล
