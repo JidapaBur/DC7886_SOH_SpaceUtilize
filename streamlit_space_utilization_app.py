@@ -171,6 +171,14 @@ if soh_file:
     st.subheader("Dept Summary (Capacity & Utilization)")
     st.dataframe(dept_summary_display, use_container_width=True)
 #----------------------------------------------------------------------
+    labels = zone_summary["Zone"]
+    sizes = zone_summary["Total_Pallets"]
+    
+    fig1, ax1 = plt.subplots(figsize=(6, 6))
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=["steelblue", "lightgray", "lightcoral"])
+    ax1.axis('equal')
+    ax1.set_title("Zone Utilization (by Used Pallets)")
+    st.pyplot(fig1)
     
     # 🔹 Pie Chart: Zone Utilization (ซ้าย)
     used = zone_summary["Total_Pallets"]
