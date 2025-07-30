@@ -169,6 +169,22 @@ if soh_file:
     )
     
     st.subheader("Dept Summary (Capacity & Utilization)")
+
+        # ✅ เพิ่มแถวรวม (Total row)
+    total_pallets = dept_summary["Total_Pallets"].sum()
+    total_capacity = zone_capacity[1]
+    total_utilization = (total_pallets / total_capacity) * 100
+    
+    total_row = pd.DataFrame([{
+        "Dept.": "Total",
+        "Total_Pallets": f"{int(total_pallets):,}",
+        "Capacity": f"{int(total_capacity):,}",
+        "%Utilization": f"{total_utilization:.2f}%"
+    }])
+    
+    # ✅ รวมเข้ากับ dataframe ที่จะแสดง
+    dept_summary_display = pd.concat([dept_summary_display, total_row], ignore_index=True)
+
     st.dataframe(dept_summary_display, use_container_width=True)
 #----------------------------------------------------------------------
     # สร้างคอลัมน์แนวนอนสำหรับกราฟ
