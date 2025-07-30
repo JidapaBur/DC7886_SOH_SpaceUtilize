@@ -137,40 +137,25 @@ if soh_file:
 
 # ------------------ Dept Summary -------------------
 
-    # Summary per zone
-    zone_summary = df.groupby("Zone")["Effective_Pallets"].sum().reset_index()
-    zone_summary.columns = ["Zone", "Total_Pallets"]
-    zone_summary["Capacity"] = zone_summary["Zone"].map(zone_capacity)
-    zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
-    zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
-
-    # สร้าง dept_summary ใหม่
-    dept_summary = df.groupby("DEPT_NAME")["Pallets"].sum().reset_index()
+    # ✅ สร้าง Dept Summary ด้วย Effective Pallets จาก Zone 1
+    zone1_df = df[df["Zone"] == 1]
+    dept_summary = zone1_df.groupby("DEPT_NAME")["Effective_Pallets"].sum().reset_index()
     dept_summary.columns = ["Dept.", "Total_Pallets"]
     
-    # ใส่ capacity
-    #dept_summary["Capacity"] = dept_summary["Dept."].map(dept_capacity)
-    dept_summary["Capacity"] = zone_capacity[1]  # ใช้ cap ของ Zone 1 แทน
+    # ✅ ใช้ capacity เดียวกันทั้งตาราง (Zone 1)
+    dept_summary["Capacity"] = zone_capacity[1]
     
-    # คำนวณ % utilization
+    # ✅ คำนวณ Utilization%
     dept_summary["%Utilization"] = (dept_summary["Total_Pallets"] / dept_summary["Capacity"]) * 100
     dept_summary["%Utilization"] = dept_summary["%Utilization"].round(2)
     
-    # เตรียม dataframe สำหรับแสดงผล
+    # ✅ Format for display
     dept_summary_display = dept_summary.copy()
-    dept_summary_display["Total_Pallets"] = dept_summary_display["Total_Pallets"].apply(
-        lambda x: f"{int(x):,}" if pd.notna(x) else "-"
-    )
-    dept_summary_display["Capacity"] = dept_summary_display["Capacity"].apply(
-        lambda x: f"{int(x):,}" if pd.notna(x) else "-"
-    )
-    dept_summary_display["%Utilization"] = dept_summary_display["%Utilization"].apply(
-        lambda x: f"{x:.2f}%" if pd.notna(x) else "-"
-    )
+    dept_summary_display["Total_Pallets"] = dept_summary_display["Total_Pallets"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["Capacity"] = dept_summary_display["Capacity"].apply(lambda x: f"{int(x):,}")
+    dept_summary_display["%Utilization"] = dept_summary_display["%Utilization"].apply(lambda x: f"{x:.2f}%")
     
-    st.subheader("Dept Summary (Capacity & Utilization)")
-
-        # ✅ เพิ่มแถวรวม (Total row)
+    # ✅ Add total row
     total_pallets = dept_summary["Total_Pallets"].sum()
     total_capacity = zone_capacity[1]
     total_utilization = (total_pallets / total_capacity) * 100
@@ -182,10 +167,11 @@ if soh_file:
         "%Utilization": f"{total_utilization:.2f}%"
     }])
     
-    # ✅ รวมเข้ากับ dataframe ที่จะแสดง
     dept_summary_display = pd.concat([dept_summary_display, total_row], ignore_index=True)
-
+    
+    st.subheader("Dept Summary (Capacity & Utilization)")
     st.dataframe(dept_summary_display, use_container_width=True)
+
 
 
     #-----------------------------SKU Table-----------------------------------------
