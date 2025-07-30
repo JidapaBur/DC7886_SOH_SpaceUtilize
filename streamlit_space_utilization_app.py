@@ -190,7 +190,7 @@ if soh_file:
     # จัดรูปแบบตัวเลขให้ดูสวย
     detail_table["Pallets"] = detail_table["Pallets"].round(2)
     detail_table["Stacking"] = detail_table["Stacking"].round(2)
-    detail_table["Effective_Pallets"] = detail_table["Pallets"].round(2)
+    
     
     # แสดงผลใน Streamlit
     st.subheader("SKU-Level Pallet & Space Utilization")
