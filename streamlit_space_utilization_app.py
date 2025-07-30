@@ -182,7 +182,15 @@ if soh_file:
     #-----------------------------SKU Table-----------------------------------------
     
     # สร้างตารางแสดงรายการสินค้า พร้อมข้อมูล pallet และการใช้พื้นที่
+    # เตรียมเฉพาะ Description
+    desc_map = soh_df[["SKU", "Description"]].drop_duplicates().set_index("SKU").to_dict()["Description"]
+    
+    # map เข้า df
+    df["Description"] = df["SKU"].map(desc_map)
+    
+    # แล้วค่อยใช้:
     detail_table = df[["SKU", "Description", "DEPT_NAME", "Zone", "Pallets"]].copy()
+
     
     # เปลี่ยนชื่อ column ให้อ่านง่าย
     detail_table.columns = ["SKU", "Description", "Dept", "Zone", "Pallets"]
