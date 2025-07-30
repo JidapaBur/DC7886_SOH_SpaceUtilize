@@ -188,7 +188,7 @@ if soh_file:
     st.dataframe(dept_summary_display, use_container_width=True)
 
 
-    #----------------------------------------------------------------------
+    #-----------------------------SKU Table-----------------------------------------
     
     # สร้างตารางแสดงรายการสินค้า พร้อมข้อมูล pallet และการใช้พื้นที่
     detail_table = df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking", "Effective_Pallets"]].copy()
@@ -204,6 +204,22 @@ if soh_file:
     # แสดงผลใน Streamlit
     st.subheader("SKU-Level Pallet & Space Utilization")
     st.dataframe(detail_table, use_container_width=True)
+
+#-------------------------------Missing Product---------------------------------------
+    # ตรวจสอบว่าคีย์ master เป็นอะไร เช่น "SKU" หรือชื่ออื่น
+    master_skus = product_master["SKU"].unique()
+    
+    # กรองแยกสินค้าที่ไม่มีใน master
+    missing_sku_df = df[~df["SKU"].isin(master_skus)]
+    
+    # สร้างตารางแสดงผลแบบเดียวกับข้างต้น
+    missing_detail_table = missing_sku_df[["SKU", "DEPT_NAME", "Zone", "Pallets", "Stacking", "Effective_Pallets"]].copy()
+    missing_detail_table.columns = ["SKU", "Dept", "Zone", "Pallets", "Stacking", "Effective_Pallets"]
+    missing_detail_table[["Pallets", "Stacking", "Effective_Pallets"]] = missing_detail_table[["Pallets", "Stacking", "Effective_Pallets"]].round(2)
+    
+    # แสดงผล
+    st.subheader("❌ SKUs Missing from Master Product")
+    st.dataframe(missing_detail_table, use_container_width=True)
 
     
 #----------------------------------------------------------------------
