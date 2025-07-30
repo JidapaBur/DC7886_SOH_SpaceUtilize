@@ -104,12 +104,6 @@ if soh_file:
     
 #----------------------------------------------------------------------
     
-    zone_summary = df.groupby("Zone")["Effective_Pallets"].sum().reset_index()
-    zone_summary.columns = ["Zone", "Total_Pallets"]
-    zone_summary["Capacity"] = zone_summary["Zone"].map(zone_capacity)
-    zone_summary["Utilization_%"] = (zone_summary["Total_Pallets"] / zone_summary["Capacity"]) * 100
-    zone_summary["Utilization_%"] = zone_summary["Utilization_%"].round(2)
-
     # เปลี่ยนชื่อ zone
     zone_summary["Zone"] = zone_summary["Zone"].replace({1: "Floor", 2: "Rack", 3: "Recieve"})
 
