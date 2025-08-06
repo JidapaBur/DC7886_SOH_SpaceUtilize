@@ -49,7 +49,7 @@ if soh_file:
 #----------------------------------------------------------------------
     
     # Zone & dept config
-    zone_area = {1: 9300, 2: 2880, 3: 480} #{1: 3300, 2: 2880, 3: 480}
+    zone_area = {1: 10000, 2: 2880, 3: 480} #{1: 3300, 2: 2880, 3: 480}
     zone_stack_limit = {1: 1, 2: 1, 3: 1}
     dept_area = {"REFRIGERATOR": 1060, "TKB": 200, "WASHING MACHINE": 670, "T.V.": 590}
     dept_stack_limit = {"T.V.": 2.2, "REFRIGERATOR": 2.2, "WASHING MACHINE": 3, "TKB": 2.5}
