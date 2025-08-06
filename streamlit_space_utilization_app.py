@@ -59,7 +59,7 @@ if soh_file:
     dept_capacity = {}
     for dept, area in dept_area.items():
         usable_area = area * 0.90
-        stack = dept_stack_limit.get(dept, 1.5)
+        stack = dept_stack_limit.get(dept, 1.3)
         capacity = (usable_area / pallet_area) * stack
         dept_capacity[dept] = round(capacity)
 
