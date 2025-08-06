@@ -49,7 +49,7 @@ if soh_file:
 #----------------------------------------------------------------------
     
     # Zone & dept config
-    zone_area = {1: 2520, 2: 3360, 3: 480}
+    zone_area = {1: 3800, 2: 2280, 3: 480}
     zone_stack_limit = {1: 3, 2: 1, 3: 1}
     dept_area = {"REFRIGERATOR": 1060, "TKB": 200, "WASHING MACHINE": 670, "T.V.": 590}
     dept_stack_limit = {"T.V.": 2.2, "REFRIGERATOR": 2.2, "WASHING MACHINE": 3, "TKB": 2.5}
@@ -58,7 +58,7 @@ if soh_file:
     # Dept capacity
     dept_capacity = {}
     for dept, area in dept_area.items():
-        usable_area = area * 0.95
+        usable_area = area * 0.90
         stack = dept_stack_limit.get(dept, 3)
         capacity = (usable_area / pallet_area) * stack
         dept_capacity[dept] = round(capacity)
@@ -66,7 +66,7 @@ if soh_file:
     # Zone capacity
     zone_capacity = {}
     for zone, area in zone_area.items():
-        usable_area = area * (0.95 if zone in [1, 3] else 1)
+        usable_area = area * (0.90 if zone in [1, 3] else 1)
         stack = zone_stack_limit[zone]
         capacity = (usable_area / pallet_area) * stack
         zone_capacity[zone] = round(capacity)
